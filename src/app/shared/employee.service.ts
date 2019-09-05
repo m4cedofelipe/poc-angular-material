@@ -45,6 +45,7 @@ export class EmployeeService {
   insertEmployee(employee) {
     this.employeeList.push({
       fullName: employee.fullName,
+      email:employee.email,
       mobile: employee.mobile,
       city: employee.city,
       gender: employee.gender,

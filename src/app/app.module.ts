@@ -14,6 +14,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { EmployeeService } from './shared/employee.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { environment } from './../environments/environment';
+import { EmployeeListComponent } from './employees/employee-list/employee-list.component';
 
 
 
@@ -22,7 +23,8 @@ import { environment } from './../environments/environment';
   declarations: [
     AppComponent,
     EmployeesComponent,
-    EmployeeComponent
+    EmployeeComponent,
+    EmployeeListComponent
   ],
   imports: [
     BrowserModule,
