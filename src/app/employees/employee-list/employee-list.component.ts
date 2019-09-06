@@ -1,6 +1,6 @@
 import { EmployeeService } from './../../shared/employee.service';
-import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatTableDataSource, MatSort } from '@angular/material';
 
 @Component({
   selector: 'app-employee-list',
@@ -9,10 +9,12 @@ import { MatTableDataSource } from '@angular/material';
 })
 export class EmployeeListComponent implements OnInit {
 
+  @ViewChild(MatSort, { static: false }) sort: MatSort;
+
   constructor(private service: EmployeeService) { }
 
   listData: MatTableDataSource<any>;
-  displayedColumns: string[] = ['fullName', 'email', 'mobile', 'city', 'actions'];
+  displayedColumns: string[] = ['fullName', 'email', 'mobile', 'city', 'department', 'actions'];
 
   ngOnInit() {
     this.service.getEmployees()
@@ -24,6 +26,7 @@ export class EmployeeListComponent implements OnInit {
           };
         });
         this.listData = new MatTableDataSource(array);
+        this.listData.sort = this.sort;
       });
   }
 

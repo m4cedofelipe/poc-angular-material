@@ -56,3 +56,15 @@ snack-bar-container.notification simple-snack-bar {
     font-size: 14px !important;
     font-weight: bold;
 }
+
+.hide {
+    display: none;
+}
+
+
+/* mat-table */
+
+tr.mat-footer-row td.mat-footer-cell {
+    text-align: center;
+    font-style: italic;
+}
