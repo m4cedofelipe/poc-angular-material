@@ -1,6 +1,6 @@
-import { EmployeeService } from './../../shared/employee.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTableDataSource, MatSort } from '@angular/material';
+import {EmployeeService} from './../../shared/employee.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {MatTableDataSource, MatSort, MatPaginator} from '@angular/material';
 
 @Component({
   selector: 'app-employee-list',
@@ -9,9 +9,13 @@ import { MatTableDataSource, MatSort } from '@angular/material';
 })
 export class EmployeeListComponent implements OnInit {
 
-  @ViewChild(MatSort, { static: false }) sort: MatSort;
+  @ViewChild(MatSort, {static: false}) sort: MatSort;
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
 
-  constructor(private service: EmployeeService) { }
+  searchKey: string;
+
+  constructor(private service: EmployeeService) {
+  }
 
   listData: MatTableDataSource<any>;
   displayedColumns: string[] = ['fullName', 'email', 'mobile', 'city', 'department', 'actions'];
@@ -27,7 +31,16 @@ export class EmployeeListComponent implements OnInit {
         });
         this.listData = new MatTableDataSource(array);
         this.listData.sort = this.sort;
+        this.listData.paginator = this.paginator;
       });
   }
 
+  onSearchClear() {
+    this.searchKey = '';
+    this.applyFilter();
+  }
+
+  applyFilter() {
+    this.listData.filter = this.searchKey.trim().toLowerCase();
+  }
 }
