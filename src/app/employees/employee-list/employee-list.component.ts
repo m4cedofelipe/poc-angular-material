@@ -1,6 +1,7 @@
-import {EmployeeService} from './../../shared/employee.service';
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {MatTableDataSource, MatSort, MatPaginator} from '@angular/material';
+import { DepartmentService } from './../../shared/department.service';
+import { EmployeeService } from './../../shared/employee.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
 
 @Component({
   selector: 'app-employee-list',
@@ -9,29 +10,37 @@ import {MatTableDataSource, MatSort, MatPaginator} from '@angular/material';
 })
 export class EmployeeListComponent implements OnInit {
 
-  @ViewChild(MatSort, {static: false}) sort: MatSort;
-  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: false }) sort: MatSort;
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
   searchKey: string;
 
-  constructor(private service: EmployeeService) {
+  constructor(private service: EmployeeService,
+    private departmentService: DepartmentService) {
   }
 
   listData: MatTableDataSource<any>;
   displayedColumns: string[] = ['fullName', 'email', 'mobile', 'city', 'department', 'actions'];
 
   ngOnInit() {
-    this.service.getEmployees()
-      .subscribe(list => {
+    this.service.getEmployees().subscribe(
+      list => {
         let array = list.map(item => {
+          let departmentName = this.departmentService.getDepartmentName(item.payload.val()['department']);
           return {
             $key: item.key,
+            departmentName,
             ...item.payload.val()
           };
         });
         this.listData = new MatTableDataSource(array);
         this.listData.sort = this.sort;
         this.listData.paginator = this.paginator;
+        this.listData.filterPredicate = (data, filter) => {
+          return this.displayedColumns.some(ele => {
+            return ele != 'actions' && data[ele].toLowerCase().indexOf(filter) != -1;
+          });
+        };
       });
   }
 
