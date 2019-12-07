@@ -3,6 +3,8 @@ import {EmployeeService} from './../../shared/employee.service';
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatDialog, MatDialogConfig, MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {EmployeeComponent} from '../employee/employee.component';
+import {NotificationService} from '../../shared/notification.service';
+import {DialogService} from '../../shared/dialog.service';
 
 @Component({
   selector: 'app-employee-list',
@@ -18,32 +20,35 @@ export class EmployeeListComponent implements OnInit {
 
   constructor(private service: EmployeeService,
               private departmentService: DepartmentService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private notificationService: NotificationService,
+              private dialogService: DialogService) {
   }
 
   listData: MatTableDataSource<any>;
   displayedColumns: string[] = ['fullName', 'email', 'mobile', 'city', 'department', 'actions'];
 
   ngOnInit() {
-    this.service.getEmployees().subscribe(
-      list => {
-        const array = list.map(item => {
-          const departmentName = this.departmentService.getDepartmentName(item.payload.val().department);
-          return {
-            $key: item.key,
-            departmentName,
-            ...item.payload.val()
+    this.service.getEmployees()
+      .subscribe(
+        list => {
+          const array = list.map(item => {
+            const departmentName = this.departmentService.getDepartmentName(item.payload.val().department);
+            return {
+              $key: item.key,
+              departmentName,
+              ...item.payload.val()
+            };
+          });
+          this.listData = new MatTableDataSource(array);
+          this.listData.sort = this.sort;
+          this.listData.paginator = this.paginator;
+          this.listData.filterPredicate = (data, filter) => {
+            return this.displayedColumns.some(ele => {
+              return ele !== 'actions' && data[ele].toLowerCase().indexOf(filter) !== -1;
+            });
           };
         });
-        this.listData = new MatTableDataSource(array);
-        this.listData.sort = this.sort;
-        this.listData.paginator = this.paginator;
-        this.listData.filterPredicate = (data, filter) => {
-          return this.displayedColumns.some(ele => {
-            return ele !== 'actions' && data[ele].toLowerCase().indexOf(filter) !== -1;
-          });
-        };
-      });
   }
 
   onSearchClear() {
@@ -73,4 +78,15 @@ export class EmployeeListComponent implements OnInit {
     dialogConfig.width = '60%';
     this.dialog.open(EmployeeComponent, dialogConfig);
   }
+
+  onDelete($key) {
+    this.dialogService.openConfirmDialog('Are you sure to delete this record ?')
+      .afterClosed().subscribe(res => {
+      if (res) {
+        this.service.deleteEmployee($key);
+        this.notificationService.warn('! Deleted successfully');
+      }
+    });
+  }
 }
+

@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { AngularFireDatabase, AngularFireList } from 'angularfire2/database';
-import { DatePipe } from '@angular/common';
+import {Injectable} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {AngularFireDatabase, AngularFireList} from 'angularfire2/database';
+import {DatePipe} from '@angular/common';
 
 import * as _ from 'lodash';
 
@@ -11,7 +11,8 @@ import * as _ from 'lodash';
 export class EmployeeService {
 
   constructor(private firebase: AngularFireDatabase,
-    private datePipe: DatePipe) { }
+              private datePipe: DatePipe) {
+  }
 
   employeeList: AngularFireList<any>;
 
@@ -25,7 +26,7 @@ export class EmployeeService {
     department: new FormControl(0),
     hireDate: new FormControl(),
     isPermanent: new FormControl()
-  })
+  });
 
   initializeFormGroup() {
     this.form.setValue({
@@ -54,7 +55,7 @@ export class EmployeeService {
       city: employee.city,
       gender: employee.gender,
       department: employee.department,
-      hireDate: employee.hireDate == "" ? "" : this.datePipe.transform(employee.hireDate, 'dd-mm-yyyy'),
+      hireDate: employee.hireDate === '' ? '' : this.datePipe.transform(employee.hireDate, 'yyyy-MM-dd'),
       isPermanent: employee.isPermanent
     });
   }
@@ -67,13 +68,14 @@ export class EmployeeService {
         city: employee.city,
         gender: employee.gender,
         department: employee.department,
-        hireDate: employee.hireDate == "" ? "" : this.datePipe.transform(employee.hireDate, 'dd-mm-yyyy'),
+        hireDate: employee.hireDate == '' ? '' : this.datePipe.transform(employee.hireDate, 'dd-mm-yyyy'),
         isPermanent: employee.isPermanent
-      });
+      }).then(r => r);
   }
 
   deleteEmployee($key: string) {
-    this.employeeList.remove($key);
+    this.employeeList.remove($key)
+      .then(r => r);
   }
 
   populateForm(employee: any) {

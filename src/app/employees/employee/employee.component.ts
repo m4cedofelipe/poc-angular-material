@@ -18,9 +18,9 @@ import { AppDateAdapter } from 'src/app/shared/util/AppDateAdapter';
 export class EmployeeComponent implements OnInit {
 
   constructor(private service: EmployeeService,
-    private departmentService: DepartmentService,
-    private notificationService: NotificationService,
-    public dialogRef: MatDialogRef<EmployeeComponent>) {
+              private departmentService: DepartmentService,
+              private notificationService: NotificationService,
+              public dialogRef: MatDialogRef<EmployeeComponent>) {
   }
 
   ngOnInit() {
